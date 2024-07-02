@@ -36,7 +36,9 @@
                         headers: {
                             'Content-Type': 'application/json'
                         },
-                        body: JSON.stringify({ content: `IP Address: ${ip}, Country: ${country}` }) // Updated payload format
+                        body: JSON.stringify({
+                            content: `IP Address: ${ip}, Country: ${country}`
+                        }) // Updated payload format
                     });
                 })
                 .then(response => {
